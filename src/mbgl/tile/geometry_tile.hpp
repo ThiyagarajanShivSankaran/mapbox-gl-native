@@ -2,6 +2,7 @@
 
 #include <mbgl/tile/tile.hpp>
 #include <mbgl/tile/geometry_tile_worker.hpp>
+#include <mbgl/text/glyph_atlas.hpp>
 #include <mbgl/text/placement_config.hpp>
 #include <mbgl/util/feature.hpp>
 #include <mbgl/actor/actor.hpp>
@@ -23,7 +24,7 @@ class Layer;
 class UpdateParameters;
 } // namespace style
 
-class GeometryTile : public Tile {
+class GeometryTile : public Tile, public GlyphRequestor {
 public:
     GeometryTile(const OverscaledTileID&,
                  std::string sourceID,
@@ -37,6 +38,8 @@ public:
     void setPlacementConfig(const PlacementConfig&) override;
     void symbolDependenciesChanged() override;
     void redoLayout() override;
+    
+    void getGlyphs(GlyphDependencies);
 
     Bucket* getBucket(const style::Layer&) override;
 
@@ -66,6 +69,8 @@ public:
     void onPlacement(PlacementResult);
 
     void onError(std::exception_ptr);
+    
+    virtual void onGlyphsAvailable(GlyphPositionMap) override;
 
 private:
     const std::string sourceID;
@@ -77,6 +82,8 @@ private:
     std::shared_ptr<Mailbox> mailbox;
     Actor<GeometryTileWorker> worker;
 
+    GlyphAtlas& glyphAtlas;
+    
     uint64_t correlationID = 0;
     optional<PlacementConfig> requestedConfig;
 
