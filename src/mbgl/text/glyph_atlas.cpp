@@ -70,7 +70,7 @@ void GlyphAtlas::getGlyphs(uintptr_t tileUID, GlyphDependencies glyphDependencie
                                  std::forward_as_tuple(missing, std::move(glyphDependencies), &requestor));
         for (auto fontStack : missing) {
             for (auto& range : fontStack.second) {
-                pendingGlyphRanges[std::forward_as_tuple(fontStack.first,range)].insert(tileUID);
+                pendingGlyphRanges[PendingGlyphRange(fontStack.first,range)].insert(tileUID);
                 
                 entries[fontStack.first].ranges.emplace(std::piecewise_construct,
                                std::forward_as_tuple(range),
@@ -91,7 +91,7 @@ void GlyphAtlas::onGlyphsError(const FontStack& fontStack, const GlyphRange& ran
 }
 
 void GlyphAtlas::onGlyphsLoaded(const FontStack& fontStack, const GlyphRange& range) {
-    auto dependendentTiles = pendingGlyphRanges.find(std::forward_as_tuple(fontStack,range));
+    auto dependendentTiles = pendingGlyphRanges.find(PendingGlyphRange(fontStack,range));
     if (dependendentTiles != pendingGlyphRanges.end()) {
         for (auto tileUID : dependendentTiles->second) {
             auto tileDependency = tileDependencies.find(tileUID);
@@ -110,7 +110,7 @@ void GlyphAtlas::onGlyphsLoaded(const FontStack& fontStack, const GlyphRange& ra
                 }
             }
         }
-        pendingGlyphRanges.erase(std::forward_as_tuple(fontStack,range));
+        pendingGlyphRanges.erase(PendingGlyphRange(fontStack,range));
     }
     if (observer) {
         observer->onGlyphsLoaded(fontStack, range);
