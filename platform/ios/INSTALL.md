@@ -85,6 +85,14 @@ To test pre-releases and/or betas, you can reference the pre-release like so in 
 pod 'Mapbox-iOS-SDK', podspec: 'https://raw.githubusercontent.com/mapbox/mapbox-gl-native/<insert branch or tag>/ios/Mapbox-iOS-SDK.podspec'
 ```
 
+##### Testing nightly releases with CocoaPods
+
+To test a nightly dynamic framework build, use this line to your Podfile:
+
+```rb
+pod 'Mapbox-iOS-SDK-nightly-dynamic', podspec: 'https://raw.githubusercontent.com/mapbox/mapbox-gl-native/release-ios-v3.5.0-android-v5.0.0/ios/Mapbox-iOS-SDK-nightly-dynamic.podspec'
+```
+
 ##### Using your own build with CocoaPods
 
 1. Build from source manually, per above.
